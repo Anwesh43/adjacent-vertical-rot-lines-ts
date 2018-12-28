@@ -21,7 +21,7 @@ const mirrorValue : Function = (scale : number, a : number, b : number) : number
     return (1 - k) / a + k / b
 }
 
-const updateScale : Function = (scale : number, dir : number, a : number, b : number) : number => mirrorValue(a, b) * scGap * dir
+const updateScale : Function = (scale : number, dir : number, a : number, b : number) : number => mirrorValue(scale, a, b) * scGap * dir
 
 const drawAVRNode : Function = (context : CanvasRenderingContext2D, i : number, scale : number) => {
     const gap : number = w / (nodes + 1)
@@ -90,7 +90,8 @@ class State {
     prevScale : number = 0
 
     update(cb : Function) {
-        this.scale += updateScale(this.scale)
+        this.scale += updateScale(this.scale, this.dir, lines, 1)
+        console.log(this.scale)
         if (Math.abs(this.scale - this.prevScale) > 1) {
             this.scale = this.prevScale + this.dir
             this.dir = 0
@@ -142,7 +143,7 @@ class AVRNode {
     }
 
     draw(context : CanvasRenderingContext2D) {
-        drawAVRNode(context)
+        drawAVRNode(context, this.i, this.state.scale)
         if (this.next) {
             this.next.draw(context)
         }
