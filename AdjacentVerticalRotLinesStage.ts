@@ -188,3 +188,24 @@ class AdjacentVerticalRotLine {
         this.curr.startUpdating(cb)
     }
 }
+
+class Renderer {
+    avr : AdjacentVerticalRotLine = new AdjacentVerticalRotLine()
+    animator : Animator = new Animator()
+
+    render(context : CanvasRenderingContext2D) {
+        this.avr.draw(context)
+    }
+
+    handleTap(cb : Function) {
+        this.avr.startUpdating(() => {
+            this.animator.start(() => {
+                cb()
+                this.avr.update(() => {
+                    this.animator.stop()
+                    cb()
+                })
+            })
+        })
+    }
+}
