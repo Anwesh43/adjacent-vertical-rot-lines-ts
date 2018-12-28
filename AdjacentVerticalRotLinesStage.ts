@@ -23,6 +23,33 @@ const mirrorValue : Function = (scale : number, a : number, b : number) : number
 
 const updateScale : Function = (scale : number, dir : number, a : number, b : number) : number => mirrorValue(a, b) * scGap * dir
 
+const drawAVRNode : Function = (context : CanvasRenderingContext2D, i : number, scale : number) => {
+    const gap : number = w / (nodes + 1)
+    const size : number = gap / sizeFactor
+    const sc1 : number = divideScale(scale, 0, 2)
+    const sc2 : number = divideScale(scale, 1, 2)
+    context.lineCap = 'round'
+    context.lineWidth = Math.min(w, h) / strokeFactor
+    context.strokeStyle = color
+    const xGap : number = (2 * size) / lines
+    context.save()
+    context.translate(gap * (i + 1), h/2)
+    context.rotate(Math.PI/2 * sc2)
+    context.translate(-size, 0)
+    for (var j = 0; j < lines; j++) {
+        const sc : number = divideScale(sc1, j, lines)
+        context.save()
+        context.translate(xGap * j, 0)
+        context.rotate(Math.PI/2 * sc)
+        context.beginPath()
+        context.moveTo(0, 0)
+        context.lineTo(0, -xGap)
+        context.stroke()
+        context.restore()
+    }
+    context.restore()
+}
+
 class AdjacentVerticalRotLinesStage {
     canvas : HTMLCanvasElement = document.createElement('canvas')
     context : CanvasRenderingContext2D
