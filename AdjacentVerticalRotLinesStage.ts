@@ -21,7 +21,7 @@ const mirrorValue : Function = (scale : number, a : number, b : number) : number
     return (1 - k) / a + k / b
 }
 
-const updateScale : Function = (scale : number, dir : number, a : number, b : number) : number => mirrorValue(a, b) * scGap * dir 
+const updateScale : Function = (scale : number, dir : number, a : number, b : number) : number => mirrorValue(a, b) * scGap * dir
 
 class AdjacentVerticalRotLinesStage {
     canvas : HTMLCanvasElement = document.createElement('canvas')
@@ -50,5 +50,28 @@ class AdjacentVerticalRotLinesStage {
         stage.initCanvas()
         stage.render()
         stage.handleTap()
+    }
+}
+
+class State {
+    scale : number = 0
+    dir : number = 0
+    prevScale : number = 0
+
+    update(cb : Function) {
+        this.scale += updateScale(this.scale)
+        if (Math.abs(this.scale - this.prevScale) > 1) {
+            this.scale = this.prevScale + this.dir
+            this.dir = 0
+            this.prevScale = this.scale
+            cb(this.prevScale)
+        }
+    }
+
+    startUpdating(cb : Function) {
+        if (this.dir == 0) {
+            this.dir = 1 - 2 * this.prevScale
+            cb()
+        }
     }
 }
